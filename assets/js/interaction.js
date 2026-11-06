@@ -7,6 +7,13 @@ for (let action of control_bar_actions) {
     action.classList.remove("no-js");
     let dropdown = action.getElementsByClassName("control-bar-dropdown-menu")[0]
 
+    function closeDropdown() {
+        action.classList.remove("active-dropdown-menu");
+        if (current_dropdown === action) {
+            current_dropdown = null;
+        }
+    }
+
     action.addEventListener("click", function(e) {
 
         // Get the root element of the currently clicked dropdown
@@ -30,6 +37,22 @@ for (let action of control_bar_actions) {
             action.classList.add("active-dropdown-menu");
             current_dropdown = action;
         };
+    });
+
+    action.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            action.click();
+        } else if (e.key === "Escape") {
+            closeDropdown();
+            action.focus();
+        }
+    });
+
+    action.addEventListener("focusout", function(e) {
+        if (!action.contains(e.relatedTarget)) {
+            closeDropdown();
+        }
     });
 };
 

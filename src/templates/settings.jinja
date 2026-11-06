@@ -15,7 +15,7 @@
 {% block center %}
     <form class="settings" method="post" action="/settings" aria-label="{{translate(request.ctx.language, "settings_header")}}">
         <div id="setting-heading">
-            <h2>{{translate(request.ctx.language, "settings_header")}}</h2>
+            <h1>{{translate(request.ctx.language, "settings_header")}}</h1>
         </div>
         <hr>
         <!-- Once more options are added, the various settings below
@@ -23,22 +23,22 @@
         <div class="main-tab">
             <fieldset id="theme-selector" aria-describedby="theme-selector-info-box" role="radiogroup">
                 <legend class="option-info-box">
-                    <label for="theme-selector">{{translate(request.ctx.language, "settings_theme_selector")}}</h1>
-                    <p id="theme-selector-info-box">{{translate(request.ctx.language, "settings_theme_selector_desc")}}</p>
+                    <span>{{translate(request.ctx.language, "settings_theme_selector")}}</span>
+                    <span id="theme-selector-info-box" class="option-desc">{{translate(request.ctx.language, "settings_theme_selector_desc")}}</span>
                 </legend>
                 <input type="radio" id="auto-theme-selector" name="theme" value="auto" {% if request.ctx.preferences.theme =="auto"%}checked{%endif%}/>
                 <label for="auto-theme-selector">
-                    <img src="/assets/images/priviblur-auto.svg"/>
+                    <img src="/assets/images/priviblur-auto.svg" alt=""/>
                     <p>{{translate(request.ctx.language, "settings_theme_selector_option_auto")}}</p>
                 </label>
                 <input type="radio" id="light-theme-selector" name="theme" value="light" {% if request.ctx.preferences.theme =="light"%}checked{%endif%}/>
                 <label for="light-theme-selector">
-                    <img src="/assets/images/priviblur-light.svg"/>
+                    <img src="/assets/images/priviblur-light.svg" alt=""/>
                     <p>{{translate(request.ctx.language, "settings_theme_selector_option_light")}}</p>
                 </label>
                 <input type="radio" id="dark-theme-selector" name="theme" value="dark" {% if request.ctx.preferences.theme =="dark"%}checked{%endif%}/>
                 <label for="dark-theme-selector">
-                    <img src="/assets/images/priviblur-dark.svg"/>
+                    <img src="/assets/images/priviblur-dark.svg" alt=""/>
                     <p>{{translate(request.ctx.language, "settings_theme_selector_option_dark")}}</p>
                 </label>
             </fieldset>
@@ -66,7 +66,7 @@
                 </div>
 
                 <input type="checkbox" id="expand-posts-checkbox" name="expand_posts" {% if request.ctx.preferences.expand_posts == true %}checked{% endif %}/>
-                <input type="hidden" id="expand-posts-checkbox" name="expand_posts" value="off"/>
+                <input type="hidden" name="expand_posts" value="off"/>
             </div>
         </div>
         <div id="settings-footer">

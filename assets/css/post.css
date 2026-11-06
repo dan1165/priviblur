@@ -83,8 +83,9 @@ a.blog-name {
   word-break: break-word;
 }
 
-a.blog-name:hover {
-  align-self: center;
+a.blog-name:hover,
+.post-timestamp a:hover {
+  text-decoration: underline;
 }
 
 .broken-blog, .deactivated-blog {
@@ -145,6 +146,7 @@ a.hidden-reblog {
 
 .post .alert {
   margin: 0;
+  width: 100%;
 }
 
 .post-footer {
@@ -171,6 +173,7 @@ a.hidden-reblog {
   border-radius: 6px;
   padding: 1px 5px;
   font-weight: 500;
+  color: var(--color-text);
 }
 
 .post-tag:hover {
@@ -188,6 +191,10 @@ a.hidden-reblog {
   display: flex;
   gap: 15px;
   align-items: center;
+}
+
+.interaction-buttons a:hover {
+  opacity: 0.7;
 }
 
 .interaction-buttons path {

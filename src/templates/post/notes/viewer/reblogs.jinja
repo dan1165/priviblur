@@ -3,7 +3,7 @@
 {% from 'components/icons/expand.jinja' import dropdown_icon  %}
 
 {% block control_bar %}
-    <li class="control-bar-action no-js" id="sort-by-filter" title="{{translate(request.ctx.language, "timeline_search_sort_by_filter_title")}}"><span>{{translate(request.ctx.language, "dropdown_filter_menu_text")}}{{dropdown_icon(16, 16)}}</span>
+    <li class="control-bar-action no-js" tabindex="0" id="sort-by-filter" title="{{translate(request.ctx.language, "timeline_search_sort_by_filter_title")}}"><span>{{translate(request.ctx.language, "dropdown_filter_menu_text")}}{{dropdown_icon(16, 16)}}</span>
         <ul class="control-bar-dropdown-menu">
             {% if reblog_filter is none  %}
                 {% set reblog_filter = "reblogs_with_comments" %}

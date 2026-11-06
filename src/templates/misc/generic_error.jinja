@@ -4,19 +4,26 @@
 {% from 'macros/render_error_details.jinja' import render_error_details with context  %}
 {% block head %}
 <style>
+#priviblur-error {
+    color: var(--color-text);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+}
+
 #priviblur-error > div {
     background-color: var(--color-top-level-card-bg);
     border-radius: 25px;
     padding: 25px;
+    width: 100%;
     max-width: 100%;
+    box-sizing: border-box;
 }
 
-#priviblur-error h2 {
+#priviblur-error h1 {
     margin: 0;
-}
-
-#priviblur-error {
-    color: var(--color-text);
+    font-size: 1.5em;
 }
 
 #priviblur-error details {
@@ -24,7 +31,9 @@
 }
 
 #priviblur-error pre {
-    text-wrap: wrap;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-width: 100%;
 }
 
 #priviblur-error a {
@@ -41,16 +50,10 @@
 }
 
 @media screen and (min-width: 768px) {
-    #priviblur-error pre {
-        text-wrap: nowrap;
-    }
-
     #priviblur-error > div {
-        max-width: unset;
         width: fit-content;
+        max-width: 100%;
     }
-}
-
 }
 </style>
 
@@ -61,7 +64,7 @@
 <section id="priviblur-error">
     <div class="card">
         <div id="error-header">
-            <h2>{{translate(request.ctx.language, "priviblur_error_generic")}}</h2>
+            <h1>{{translate(request.ctx.language, "priviblur_error_generic")}}</h1>
             <p>{{translate(request.ctx.language, "priviblur_error_generic_description")}}</p>
             <a href="https://github.com/syeopite/priviblur/issues/new">{{translate(request.ctx.language, "priviblur_error_generic_description_2")}}</a>
         </div>

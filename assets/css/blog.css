@@ -4,6 +4,7 @@
     margin-bottom: 10px;
     border-radius: 10px;
     padding-bottom: 30px;
+    width: 100%;
     max-width: 590px;
 }
 
@@ -57,7 +58,7 @@
 
 .blog-search-bar {
     max-width: 590px;
-    width: unset;
+    width: 100%;
     margin-bottom: 10px;
 
     border: 0;
@@ -67,9 +68,4 @@
 
 .alerts {
     max-width: 590px;
-}
-
-.alert {
-    width: 100%;
-    margin-top: 20px;
 }

@@ -1,7 +1,7 @@
 .settings {
     display: flex;
     flex-direction: column;
-    width: 100vw;
+    width: calc(100vw - 20px);
     border-radius: 10px;
     background: var(--color-top-level-card-bg);
     padding: 25px;
@@ -18,8 +18,9 @@
     color: var(--color-setting-top-heading);
 }
 
-#setting-heading > h2 {
+#setting-heading > h1 {
     margin: 0;
+    font-size: 1.5em;
 }
 
 .main-tab > div, .main-tab > fieldset {
@@ -43,14 +44,17 @@
     margin: 0;
 }
 
-.option-info-box label {
+.option-info-box label,
+legend.option-info-box > span {
     color: var(--color-setting-option);
     font-weight: 600;
     font-size: 14px;
     margin: 0;
 }
 
-.option-info-box p {
+.option-info-box p,
+.option-info-box .option-desc {
+    display: block;
     margin-top: 5px;
     color: var(--color-setting-option-desc);
     font-weight: 500;
@@ -65,6 +69,11 @@
 
 #theme-selector input:checked + label img {
     outline: solid 3px var(--color-settings-theme-select-outline);
+}
+
+#theme-selector input:focus-visible + label img {
+    outline: solid 3px var(--color-focus-ring);
+    outline-offset: 3px;
 }
 
 #theme-selector > label > p {
@@ -136,7 +145,14 @@ select {
     border-radius: 10px;
     border: 0;
     padding: 0 10px;
-    height: 40px;
+    height: 44px;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-primary-button-bg);
+    margin: 0;
 }
 
 @media screen and (min-width:640px) {

@@ -13,14 +13,17 @@
 {% endblock %}
 
 {% block center %}
+    {%- if not blog.blog_info.title -%}
+        <h1 class="visually-hidden">{{blog.blog_info.name | e}}</h1>
+    {%- endif -%}
     {%- include 'components/blog_header.jinja' -%}
 
-    <form class="blog-search-bar search-bar" method="get" action="/{{blog.blog_info.name}}/search" autocomplete="off">
+    <form class="blog-search-bar search-bar" method="get" action="/{{blog.blog_info.name}}/search" autocomplete="off" aria-label="{{translate(request.ctx.language, "blog_search_placeholder_text")}}">
         {{-search_icon(20, 20)}}
         {%- if blog_search_query is defined -%}
-            <input name="q" type="text" value="{{blog_search_query | e}}" placeholder="{{translate(request.ctx.language, "blog_search_placeholder_text")}}"></input>
+            <input name="q" type="text" value="{{blog_search_query | e}}" placeholder="{{translate(request.ctx.language, "blog_search_placeholder_text")}}">
         {%- else -%}
-            <input name="q" type="text" placeholder={{translate(request.ctx.language, "blog_search_placeholder_text")}}></input>
+            <input name="q" type="text" placeholder="{{translate(request.ctx.language, "blog_search_placeholder_text")}}">
         {%- endif -%}
     </form>
     

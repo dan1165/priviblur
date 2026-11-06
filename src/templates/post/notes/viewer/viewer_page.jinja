@@ -9,5 +9,6 @@
 {% endblock %}
 
 {% block center %}
+    <h1 class="visually-hidden">{% if blog_info.title %}{{blog_info.title | e}}{% else %}{{blog_info.name | e}}{% endif %}</h1>
     {%- include "post/notes/viewer/" + note_type + ".jinja" %}
 {% endblock %}

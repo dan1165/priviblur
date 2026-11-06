@@ -15,7 +15,7 @@
                 {%- elif element.blog.url is defined -%}
                     <a class="link blog-name" href="/{{element.blog.name}}">{{element.blog.name}}</a>
                 {%- else -%}
-                    <span class="link blog-name broken-blog" href="/{{element.blog.name}}">{{element.blog.name}}</span>
+                    <span class="link blog-name broken-blog">{{element.blog.name}}</span>
                 {%- endif -%}
 
                 {% if element.date %}

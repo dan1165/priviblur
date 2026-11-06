@@ -9,8 +9,13 @@ media = sanic.Blueprint("TumblrMedia", url_prefix="/tblr")
 async def get_media(
     request, client: aiohttp.ClientSession, path_to_request, additional_headers=None, base_url=""
 ):
+    request_headers = dict(additional_headers or {})
+    for header in ("range", "if-none-match", "if-modified-since"):
+        if value := request.headers.get(header):
+            request_headers[header] = value
+
     async with client.get(
-        f"{base_url}/{path_to_request}", headers=additional_headers
+        f"{base_url}/{path_to_request}", headers=request_headers
     ) as tumblr_response:
         # Sanitize the headers given by Tumblr
         priviblur_response_headers = {}
@@ -28,7 +33,14 @@ async def get_media(
         elif tumblr_response.status == 429:
             return sanic.response.empty(status=502)
 
-        priviblur_response = await request.respond(headers=priviblur_response_headers)
+        # Tumblr media paths are content-addressed, so repeat loads can be served
+        # straight from the browser cache instead of re-fetching through the proxy.
+        if tumblr_response.status in (200, 206):
+            priviblur_response_headers["Cache-Control"] = "public, max-age=31536000, immutable"
+
+        priviblur_response = await request.respond(
+            status=tumblr_response.status, headers=priviblur_response_headers
+        )
 
         async for chunk in tumblr_response.content.iter_any():
             await priviblur_response.send(chunk)

@@ -39,7 +39,23 @@ Priviblur has no official instance
 
 ### Docker
 
-You can install Priviblur through the official docker images here: https://quay.io/repository/syeopite/priviblur
+This fork publishes multi-architecture images (`linux/amd64` and `linux/arm64`) to
+GitHub Container Registry:
+
+```
+docker pull ghcr.io/dan1165/priviblur:latest
+```
+
+The included compose file builds and runs a local single-user instance on
+`0.0.0.0:8000` with Redis caching:
+
+```bash
+cp config.example.toml config.toml
+# set [cache] url = "redis://priviblur-redis:6379" in config.toml
+docker compose up -d --build
+```
+
+Upstream images are available here: https://quay.io/repository/syeopite/priviblur
 
 A compose file to use this image is provided in the repository.
 

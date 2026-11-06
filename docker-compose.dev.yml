@@ -1,20 +1,36 @@
+name: priviblur-dev
+
 services:
   priviblur:
     build:
       context: .
       dockerfile: docker/Dockerfile
+    image: priviblur:local
+    container_name: priviblur
     restart: unless-stopped
+    command: ["python3", "-m", "sanic", "src.server.app", "--dev", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
     ports:
-      - "127.0.0.1:8000:8000" # Replace with "8000:8000" if you don't use a reverse proxy
+      - "0.0.0.0:8000:8000"
+    environment:
+      TZ: UTC
     volumes:
-      - ./config.toml:/priviblur/config.toml:Z,ro
+      - ./config.toml:/priviblur/config.toml:ro
+      - ./src:/priviblur/src:ro
+      - ./assets:/priviblur/assets:ro
+    depends_on:
+      priviblur-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8000/settings"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
 
-  # Redis is technically optional but is used for caching (remember to edit the config.toml file to actually make use of caching)
-  # Partially taken from https://github.com/zedeus/nitter/blob/b62d73dbd373f08af07c7a79efcd790d3bc1a49c/docker-compose.yml#L27-L44
   priviblur-redis:
-    image: redis:6.2-alpine
+    image: redis:8-alpine
     container_name: priviblur-redis
-    command: redis-server --loglevel warning
+    command: ["redis-server", "--loglevel", "warning"]
     volumes:
       - priviblur-redis:/data
     restart: unless-stopped
@@ -24,6 +40,11 @@ services:
       - no-new-privileges:true
     cap_drop:
       - ALL
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 volumes:
   priviblur-redis:

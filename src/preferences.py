@@ -91,7 +91,7 @@ class UserPreferences:
 
         Example: Convert something with a Python bool value to on/off for HTML forms.
         """
-        for attribute, type_ in self.__annotations__.items():
+        for attribute, type_ in self.__class__.__annotations__.items():
             if type_ is bool:
                 fields_dict[attribute] = "on" if getattr(self, attribute) else "off"
 
@@ -102,7 +102,7 @@ class UserPreferences:
 
         Example: Convert "on"/"off" strings to Python bools
         """
-        for attribute, type_ in self.__annotations__.items():
+        for attribute, type_ in self.__class__.__annotations__.items():
             if type_ is bool:
                 fields_dict[attribute] = True if fields_dict[attribute] == "on" else False
 

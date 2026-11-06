@@ -18,17 +18,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: "Build and test on ${{matrix.python-version}}"
-    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
         cache: "pip"
@@ -46,7 +45,7 @@ jobs:
 
     - name: Commit static locale data changes if applicable
       if: github.event_name == 'push' && matrix.python-version == '3.13'
-      uses: stefanzweifel/git-auto-commit-action@v6
+      uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: "Regenerate static locale data"
         file_pattern: 'src/i18n/i18n_data.py'
@@ -56,13 +55,43 @@ jobs:
 
     - name: Compile locales
       run: pybabel compile -d locales -D priviblur
-      
+
     - name: Run Priviblur
-      run : |
+      run: |
         python -m src.server &
 
     - name: Wait and test
-      run: sleep 5 && curl -Isf http://localhost:8000/explore/trending
+      run: |
+        for attempt in $(seq 1 30); do
+          curl -fsS http://localhost:8000/settings > /dev/null && \
+          curl -fsS http://localhost:8000/priviblur/licences > /dev/null && exit 0
+          sleep 2
+        done
+        exit 1
+
+  docker:
+    runs-on: ubuntu-latest
+    name: "Build Docker image (amd64 + arm64)"
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+        with:
+          platforms: arm64
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   generate-static-locale-data:
     name: "Regenerate static locale data if applicable"
@@ -72,10 +101,10 @@ jobs:
       contents: "write"
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: "Set up python 3.13"
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
          python-version: 3.13
          cache: "pip"
@@ -92,24 +121,23 @@ jobs:
         run: python ./utils/i18n/generate.py
 
       - name: Format static locale data file
-        run: ruff format src/i18n/i18n_data.py 
+        run: ruff format src/i18n/i18n_data.py
 
       - name: Commit if applicable
         if: github.event_name == 'push'
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "Regenerate static locale data"
           file_pattern: 'src/i18n/i18n_data.py'
-  
+
   lint:
     runs-on: ubuntu-latest
-    continue-on-error: true
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Set up Python 3.13
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: 3.13
           cache: "pip"
@@ -129,11 +157,10 @@ jobs:
         run: python ./utils/i18n/generate.py
 
       - name: Format static locale data file
-        run: ruff format src/i18n/i18n_data.py 
+        run: ruff format src/i18n/i18n_data.py
 
       - name: Lint with Ruff
         run: ruff check --output-format=github .
 
       - name: Check formatter compliance
         run: ruff format --check
-

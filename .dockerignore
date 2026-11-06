@@ -1,0 +1,9 @@
+.github
+.venv
+venv
+__pycache__
+*.pyc
+*.mo
+config.toml
+screenshots
+utils

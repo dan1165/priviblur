@@ -217,6 +217,9 @@ msgstr "Reveals on hover"
 msgid "post_footer_permalink_icon_title"
 msgstr "Permalink"
 
+msgid "media_download"
+msgstr "Download"
+
 msgid "post_footer_view_on_tumblr_icon_title"
 msgstr "View on Tumblr"
 

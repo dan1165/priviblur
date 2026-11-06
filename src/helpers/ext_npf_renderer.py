@@ -1,9 +1,20 @@
 """Extensions to npf-renderer to allow asynchronous code and some other custom styling"""
 
 import dominate
+import dominate.tags
+import dominate.util
 import npf_renderer
 
 from .helpers import url_handler
+
+
+DOWNLOAD_ICON = (
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" '
+    'width="20" height="20" aria-hidden="true">'
+    '<path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200Z'
+    'M240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>'
+    "</svg>"
+)
 
 
 class NPFParser(npf_renderer.parse.Parser):
@@ -136,6 +147,23 @@ class NPFFormatter(npf_renderer.format.Formatter):
         # fetch poll results for JS disabled users
         self.blog_name = blog_name
         self.post_id = post_id
+        self.request = request
+
+    def _download_label(self):
+        if self.request:
+            return self.request.app.ctx.translate(self.request.ctx.language, "media_download")
+        return "Download"
+
+    def _download_button(self, url):
+        label = self._download_label()
+        return dominate.tags.a(
+            dominate.util.raw(DOWNLOAD_ICON),
+            href=url,
+            download="",
+            cls="media-download",
+            title=label,
+            aria_label=label,
+        )
 
     def _format_poll(self, block):
         poll_html = super()._format_poll(block)
@@ -172,12 +200,53 @@ class NPFFormatter(npf_renderer.format.Formatter):
             image_container = image_container[0]
             image_element = image_element[0]
 
+            image_element["decoding"] = "async"
+
             self._add_alt_text_element(block, image_container)
             self._linkify_images(image_container, image_element)
+            image_container.add(self._download_button(image_element.src))
         except (ValueError, IndexError):
             pass
 
         return image_html
+
+    def _format_video(self, block):
+        video_html = super()._format_video(block)
+
+        try:
+            video_element = video_html.getElementsByTagName("video")
+            if not video_element:
+                return video_html
+
+            video_element = video_element[0]
+            video_element["preload"] = "metadata"
+
+            source = video_element.getElementsByTagName("source")
+            media_url = source[0]["src"] if source else None
+            video_html.add(self._download_button(media_url or block.media[0].url))
+        except (ValueError, IndexError, AttributeError):
+            pass
+
+        return video_html
+
+    def _format_audio(self, block):
+        audio_html = super()._format_audio(block)
+
+        try:
+            audio_element = audio_html.getElementsByTagName("audio")
+            if not audio_element:
+                return audio_html
+
+            audio_element = audio_element[0]
+            audio_element["preload"] = "metadata"
+
+            source = audio_element.getElementsByTagName("source")
+            media_url = source[0]["src"] if source else None
+            audio_html.add(self._download_button(media_url or block.media[0].url))
+        except (ValueError, IndexError, AttributeError):
+            pass
+
+        return audio_html
 
     def _linkify_images(self, image_container, image_element):
         """Wraps the given image element in a link"""

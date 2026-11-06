@@ -85,6 +85,7 @@ a.inline-link, a.inline-mention {
 .poster-overlay-text {
   padding: 0px 15px;
   background: rgba(0,0,0,0.5);
+  color: var(--color-gray-0);
   font-weight: bold;
   font-size: 28px;
   box-sizing: border-box;
@@ -241,4 +242,48 @@ a.toggle-poll-results {
   border-radius: 10px;
   font-weight: bold;
   list-style: none;
+}
+
+/* Media download button */
+.image-container, .audio-block {
+  position: relative;
+}
+
+.media-download {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  opacity: 0.9;
+  transition: opacity 100ms ease-out, background 100ms ease-out;
+}
+
+.media-download svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.media-download:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.media-download:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 590px) {
+  .media-download {
+    width: 44px;
+    height: 44px;
+  }
 }

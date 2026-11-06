@@ -24,10 +24,10 @@ jobs:
         python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v7
+      uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
       with:
         python-version: ${{ matrix.python-version }}
         cache: "pip"
@@ -45,7 +45,7 @@ jobs:
 
     - name: Commit static locale data changes if applicable
       if: github.event_name == 'push' && matrix.python-version == '3.13'
-      uses: stefanzweifel/git-auto-commit-action@v7
+      uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7
       with:
         commit_message: "Regenerate static locale data"
         file_pattern: 'src/i18n/i18n_data.py'
@@ -73,18 +73,18 @@ jobs:
     runs-on: ubuntu-latest
     name: "Build Docker image (amd64 + arm64)"
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4
         with:
           platforms: arm64
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
 
       - name: Build Docker image
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
           context: .
           file: docker/Dockerfile
@@ -101,10 +101,10 @@ jobs:
       contents: "write"
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: "Set up python 3.13"
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
          python-version: 3.13
          cache: "pip"
@@ -125,7 +125,7 @@ jobs:
 
       - name: Commit if applicable
         if: github.event_name == 'push'
-        uses: stefanzweifel/git-auto-commit-action@v7
+        uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7
         with:
           commit_message: "Regenerate static locale data"
           file_pattern: 'src/i18n/i18n_data.py'
@@ -134,10 +134,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up Python 3.13
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: 3.13
           cache: "pip"

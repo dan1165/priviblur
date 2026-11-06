@@ -4,7 +4,7 @@
 <div class="post-header">
     <div class="post-author">
         {%- if element.blog.active -%}
-            <a href="/{{element.blog.name}}"><img class="avatar" alt="{{translate(request.ctx.language, "blog_avatar_alt")}}" loading="lazy" src="{{url_handler(element.blog.avatar[-1].url)}}"></a>
+            <a href="/{{element.blog.name | e}}"><img class="avatar" alt="{{translate(request.ctx.language, "blog_avatar_alt")}}" loading="lazy" src="{{url_handler(element.blog.avatar[-1].url) | e}}"></a>
         {%- else -%}
             <img class="avatar" alt="{{translate(request.ctx.language, "blog_avatar_alt")}}" loading="lazy" src="/assets/images/anon_96px.png?v=1">
         {% endif %}

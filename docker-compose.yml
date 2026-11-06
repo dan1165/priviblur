@@ -12,6 +12,13 @@ services:
       - "0.0.0.0:8000:8000"
     environment:
       TZ: UTC
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     volumes:
       - ./config.toml:/priviblur/config.toml:ro
     depends_on:
@@ -27,7 +34,7 @@ services:
   priviblur-redis:
     image: redis:8-alpine
     container_name: priviblur-redis
-    command: ["redis-server", "--loglevel", "warning"]
+    command: ["redis-server", "--loglevel", "warning", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
     volumes:
       - priviblur-redis:/data
     restart: unless-stopped

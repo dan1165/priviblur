@@ -1,36 +1,47 @@
 import sanic
 import aiohttp
 
-from src.exceptions import exceptions
-
 media = sanic.Blueprint("TumblrMedia", url_prefix="/tblr")
 
 
 async def get_media(
     request, client: aiohttp.ClientSession, path_to_request, additional_headers=None, base_url=""
 ):
+    # A leading slash turns the concatenation into a network-path reference,
+    # which aiohttp would resolve against the client's base_url and let a
+    # caller choose the outbound host.
+    if path_to_request.startswith("/"):
+        return sanic.response.empty(status=404)
+
     request_headers = dict(additional_headers or {})
     for header in ("range", "if-none-match", "if-modified-since"):
         if value := request.headers.get(header):
             request_headers[header] = value
 
     async with client.get(
-        f"{base_url}/{path_to_request}", headers=request_headers
+        f"{base_url}/{path_to_request}", headers=request_headers, allow_redirects=False
     ) as tumblr_response:
-        # Sanitize the headers given by Tumblr
-        priviblur_response_headers = {}
-        for header_key, header_value in tumblr_response.headers.items():
-            if header_key.lower() not in request.app.ctx.BLACKLIST_RESPONSE_HEADERS:
-                priviblur_response_headers[header_key] = header_value
+        if tumblr_response.status in (301, 302, 303, 307, 308):
+            return sanic.response.empty(status=502)
 
-        if tumblr_response.status == 301:
-            if location := priviblur_response_headers.get("location"):
-                location = request.app.ctx.URL_HANDLER(location)
-                if not location.startswith("/"):
-                    raise exceptions.TumblrInvalidRedirect()
+        # Copy only headers that describe the body we are about to stream.
+        # Framework/library headers (Location, Set-Cookie, Content-Encoding,
+        # Content-Length) must be regenerated locally.
+        allowed_response_headers = {
+            "content-type",
+            "content-range",
+            "accept-ranges",
+            "etag",
+            "last-modified",
+            "expires",
+        }
+        priviblur_response_headers = {
+            header_key: header_value
+            for header_key, header_value in tumblr_response.headers.items()
+            if header_key.lower() in allowed_response_headers
+        }
 
-                return sanic.redirect(location)
-        elif tumblr_response.status == 429:
+        if tumblr_response.status == 429:
             return sanic.response.empty(status=502)
 
         # Tumblr media paths are content-addressed, so repeat loads can be served

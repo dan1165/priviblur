@@ -64,6 +64,14 @@ class UserPreferences:
         # Also skips over unknown fields.
         raw_new_prefs = {key: value[0] for key, value in raw_new_prefs.items() if key in fields}
 
+        # Partial form/query submissions retain the current value for omitted fields.
+        for field in fields:
+            if field not in raw_new_prefs:
+                current = getattr(self, field)
+                raw_new_prefs[field] = (
+                    "on" if current is True else "off" if current is False else current
+                )
+
         self.convert_value_to_python(raw_new_prefs)
 
         # TODO provide an error message to the end user when an unknown field is set,
@@ -117,6 +125,8 @@ class UserPreferences:
             "key": "settings",
             "value": self.to_url_encoded(),
             "secure": secure,
+            "httponly": True,
+            "samesite": "Lax",
             "max_age": 31540000,
         }
 

@@ -446,5 +446,5 @@ class TumblrAPI:
         """
 
         return await self._get_json(
-            f"polls/{urllib.parse.quote(blog_name, safe='')}/{post_id}/{poll_id}/results",
+            f"polls/{urllib.parse.quote(blog_name, safe='')}/{post_id}/{urllib.parse.quote(str(poll_id), safe='')}/results",
         )

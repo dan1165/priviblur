@@ -1,3 +1,5 @@
+import urllib.parse
+
 from .base import AccessCache
 from .. import priviblur_extractor
 
@@ -6,7 +8,7 @@ class BlogPostsCache(AccessCache):
     def __init__(self, ctx, blog, continuation, **kwargs):
         super().__init__(
             ctx=ctx,
-            prefix=f"blog:{blog}",
+            prefix=f"blog:{urllib.parse.quote(blog, safe='')}",
             cache_ttl=ctx.PRIVIBLUR_CONFIG.cache.cache_blog_feed_for,
             continuation=continuation,
             **kwargs,
@@ -33,7 +35,7 @@ class BlogPostsCache(AccessCache):
         ]
         for k, v in self.kwargs.items():
             if v:
-                path_to_cached_results.append(f"{k}:{v}")
+                path_to_cached_results.append(f"{k}:{urllib.parse.quote(str(v), safe='')}")
 
         return ":".join(path_to_cached_results)
 
@@ -42,7 +44,7 @@ class BlogPostCache(AccessCache):
     def __init__(self, ctx, blog, post_id, **kwargs):
         super().__init__(
             ctx=ctx,
-            prefix=f"blog:{blog}:post:{post_id}",
+            prefix=f"blog:{urllib.parse.quote(blog, safe='')}:post:{urllib.parse.quote(str(post_id), safe='')}",
             cache_ttl=ctx.PRIVIBLUR_CONFIG.cache.cache_blog_post_for,
             **kwargs,
         )
@@ -63,7 +65,7 @@ class BlogPostCache(AccessCache):
         ]
         for k, v in self.kwargs.items():
             if v:
-                path_to_cached_results.append(f"{k}:{v}")
+                path_to_cached_results.append(f"{k}:{urllib.parse.quote(str(v), safe='')}")
 
         return ":".join(path_to_cached_results)
 
@@ -73,7 +75,7 @@ class BlogSearchCache(BlogPostsCache):
         AccessCache.__init__(
             self,
             ctx=ctx,
-            prefix=f"blog:{blog}:search:{query}",
+            prefix=f"blog:{urllib.parse.quote(blog, safe='')}:search:{urllib.parse.quote(query, safe='')}",
             cache_ttl=ctx.PRIVIBLUR_CONFIG.cache.cache_blog_feed_for,
             continuation=continuation,
             **kwargs,

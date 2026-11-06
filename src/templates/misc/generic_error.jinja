@@ -69,7 +69,9 @@
             <a href="https://github.com/syeopite/priviblur/issues/new">{{translate(request.ctx.language, "priviblur_error_generic_description_2")}}</a>
         </div>
 
-        {{render_error_details(exception_name, exception_message, exception_context)}}
+        {% if request.app.ctx.PRIVIBLUR_CONFIG.misc.dev_mode %}
+            {{render_error_details(exception_name, exception_message, exception_context)}}
+        {% endif %}
     </div>
 </section>
 {%- endblock %}

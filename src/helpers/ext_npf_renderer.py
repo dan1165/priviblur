@@ -223,7 +223,7 @@ class NPFFormatter(npf_renderer.format.Formatter):
 
             source = video_element.getElementsByTagName("source")
             media_url = source[0]["src"] if source else None
-            video_html.add(self._download_button(media_url or block.media[0].url))
+            video_html.add(self._download_button(media_url or url_handler(block.media[0].url)))
         except (ValueError, IndexError, AttributeError):
             pass
 
@@ -242,7 +242,7 @@ class NPFFormatter(npf_renderer.format.Formatter):
 
             source = audio_element.getElementsByTagName("source")
             media_url = source[0]["src"] if source else None
-            audio_html.add(self._download_button(media_url or block.media[0].url))
+            audio_html.add(self._download_button(media_url or url_handler(block.media[0].url)))
         except (ValueError, IndexError, AttributeError):
             pass
 

@@ -10,9 +10,16 @@ services:
     restart: unless-stopped
     command: ["python3", "-m", "sanic", "src.server.app", "--dev", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
     ports:
-      - "0.0.0.0:8000:8000"
+      - "127.0.0.1:8000:8000"
     environment:
       TZ: UTC
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     volumes:
       - ./config.toml:/priviblur/config.toml:ro
       - ./src:/priviblur/src:ro
@@ -30,7 +37,7 @@ services:
   priviblur-redis:
     image: redis:8-alpine
     container_name: priviblur-redis
-    command: ["redis-server", "--loglevel", "warning"]
+    command: ["redis-server", "--loglevel", "warning", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
     volumes:
       - priviblur-redis:/data
     restart: unless-stopped

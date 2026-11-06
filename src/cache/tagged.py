@@ -1,3 +1,5 @@
+import urllib.parse
+
 from .base import AccessCache
 from .. import priviblur_extractor
 
@@ -26,7 +28,7 @@ class TagBrowseCache(AccessCache):
 
     def build_key(self):
         # tagged:<tag>:<latest>:<continuation>
-        path_to_cached_results = [self.prefix, self.tag]
+        path_to_cached_results = [self.prefix, urllib.parse.quote(self.tag, safe="")]
 
         if self.latest is True:
             path_to_cached_results.append("latest")

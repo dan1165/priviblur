@@ -6,11 +6,11 @@
     <image>
         <url>{{url_handler(blog.blog_info.avatar[-2].url)}}</url>
         <title>{{translate(request.ctx.language, "blog_avatar_alt")}}</title>
-        <link>{{page_url}}</link>
+        <link>{{page_url | e}}</link>
     </image>
-    <atom:logo><atom:icon>{{url_handler(blog.blog_info.avatar[-2].url)}}</atom:icon></atom:logo>
+    <atom:logo><atom:icon>{{url_handler(blog.blog_info.avatar[-2].url) | e}}</atom:icon></atom:logo>
 {% endblock %}
-{% block channel_fields %}<atom:author><name>{{blog.blog_info.name}}</name></atom:author>{% endblock %}
+{% block channel_fields %}<atom:author><name>{{blog.blog_info.name | e}}</name></atom:author>{% endblock %}
 
 {% block description %}
     {%- if blog.blog_info.description_npf -%}

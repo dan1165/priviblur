@@ -3,8 +3,8 @@
   <channel>
     <title>{%block title%}{%endblock%} {{translate(request.ctx.language, "page_title_suffix")}}</title>
     <description>{%block description%}{%endblock%}</description>
-    <link>{{page_url}}</link>
-    <atom:link href={%block feed_rss_link%}"{{page_url}}/rss"{%endblock%} rel="self" type="application/rss+xml" />
+    <link>{{page_url | e}}</link>
+    <atom:link href={%block feed_rss_link%}"{{page_url | e}}/rss"{%endblock%} rel="self" type="application/rss+xml" />
     <atom:updated>{{updated.isoformat()}}</atom:updated>
     <lastBuildDate>{{updated.strftime("%a, %d %b %Y %H:%M:%S %z")}}</lastBuildDate>
     {% block logo %}{% endblock %}

@@ -35,20 +35,27 @@ def url_handler(url: str | urllib.parse.ParseResult):
 
     hostname = url.hostname
 
+    # Do not pass executable or non-web schemes through to href/src attributes.
+    if url.scheme and url.scheme not in ("http", "https"):
+        return "#"
+
+    def is_host(domain):
+        return hostname == domain or (hostname or "").endswith(f".{domain}")
+
     # Redirects links can have malformed URLs such as https://href.li/?http://
     # As those are not proper links by themselves, we'll just use the entire
     # redirect link.
     try:
-        if hostname.endswith("href.li"):
+        if is_host("href.li"):
             return url_handler(url.query)
-        elif hostname.endswith("t.umblr.com"):
+        elif is_host("t.umblr.com"):
             parsed_query = urllib.parse.parse_qs(url.query)
             if redirect_url := parsed_query.get("z"):
                 return url_handler(redirect_url[0])
     except AttributeError:
         pass
 
-    if hostname.endswith("tumblr.com"):
+    if is_host("tumblr.com"):
         if hostname.endswith(".media.tumblr.com"):
             sub_domains = hostname.split(".")
             if sub_domains[1] == "media":

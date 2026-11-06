@@ -1,3 +1,5 @@
+import urllib.parse
+
 from .base import AccessCache
 from .. import priviblur_extractor
 
@@ -29,7 +31,7 @@ class SearchCache(AccessCache):
     def build_key(self):
         # search:<query>:<latest>:<post_filter>:<time_filter>:<continuation>
         path_to_cached_results = [
-            self.query,
+            urllib.parse.quote(self.query, safe=""),
         ]
 
         if self.kwargs.get("latest") is True:

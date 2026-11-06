@@ -1,5 +1,6 @@
 import abc
 import typing
+import urllib.parse
 
 import orjson
 
@@ -40,7 +41,9 @@ class AccessCache(abc.ABC):
         base_key = self.build_key()
 
         if self.continuation:
-            full_key_with_continuation = f"{base_key}:{self.continuation}"
+            full_key_with_continuation = (
+                f"{base_key}:{urllib.parse.quote(str(self.continuation), safe='')}"
+            )
         else:
             full_key_with_continuation = base_key
 
@@ -48,7 +51,7 @@ class AccessCache(abc.ABC):
 
     def allocate_slot_for_continuation(self, base_key, pipeline, timeline):
         if hasattr(timeline, "next") and timeline.next and timeline.next.cursor:
-            next_key = f"{base_key}:{timeline.next.cursor}"
+            next_key = f"{base_key}:{urllib.parse.quote(str(timeline.next.cursor), safe='')}"
             pipeline.setnx(next_key, "0")
             pipeline.expire(next_key, self.cache_ttl)
 
